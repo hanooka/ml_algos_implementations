@@ -10,14 +10,29 @@ class KMeans(object):
         self.k = k
         self.centroids = None
 
+
+    def __test_X_k(self, X):
+        if X.shape[0] < self.k:
+            raise ValueError("Number of examples is smaller then number of clusters")
+
     def init_centroids(self, X):
         """
         Randomly init self.centroids by sampling X
         self.centroids will contain a list of the centroids
-        :param X: Training data
-        :return: None
+
+        Parameters
+        ----------
+
+        param X: Training data
+
+        Returns
+        -------
+
+        None
         """
-        pass
+        self.__test_X_k(X)
+        idx = np.random.randint(X.shape[0], size=self.k)
+        self.centroids = X[idx,:].copy()
 
     def findClosestCentroid(self, x):
         """

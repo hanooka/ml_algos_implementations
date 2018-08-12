@@ -8,12 +8,29 @@ import matplotlib.pyplot as plt
 class KMeans(object):
     def __init__(self, k=5):
         self.k = k
-        self.centroids = None
-
+        self.centroids = None # mew
+        self.distance_metric = None
 
     def __test_X_k(self, X):
         if X.shape[0] < self.k:
             raise ValueError("Number of examples is smaller then number of clusters")
+
+    @staticmethod
+    def euclidean_distance(vector_a, vector_b):
+        """
+        calculating euclidean distance between to vectors
+        Parameters
+        ----------
+        vector_a: vector/array of shape (1, n)
+        vector_b: vector/array of shape (1, n)
+
+        returns: the euclidean distance between vector_a and vector_b
+        """
+
+        squared_sum = 0
+        for a, b in zip(vector_a, vector_b):
+            squared_sum += (a-b)**2
+        return np.sqrt(squared_sum)
 
     def init_centroids(self, X):
         """
@@ -22,40 +39,70 @@ class KMeans(object):
 
         Parameters
         ----------
-
         param X: Training data
 
-        Returns
-        -------
-
-        None
+        returns: None
         """
+
         self.__test_X_k(X)
         idx = np.random.randint(X.shape[0], size=self.k)
         self.centroids = X[idx,:].copy()
+        self.distance_metric = KMeans.euclidean_distance
 
     def findClosestCentroid(self, x):
         """
+        finding the closest centroid
 
-        :param x:
-        :return: index of the centroid
+        param x: a sample of X (a vector)
+        return: index of the centroid
         """
-        pass
 
-    def findClosestCentroids(self, X):
+        min_distance = np.inf
+        min_distance_index = -1
+        for i, centroid in enumerate(self.centroids):
+            distance = self.distance_metric(centroid, x)
+            if min_distance > distance:
+                min_distance = distance
+                min_distance_index = i
+        return min_distance_index
+
+    def setClosestCentroids(self, X):
         """
+        This is the "step" method
         for each x(i) from X we will set the result array res[i] = K - centroid
         :param X:
         :return: index array of centroids (len(x) == len(centroids))
+        """
+        C = []
+        # Setting C with the index of the centroids.
+        for x in X:
+            C.append(self.findClosestCentroid(x))
+        C = np.array(C)
+        for i in range(self.k):
+            # Case a centroid isn't close to any sample, we will remove it and reduce k to k-1.
+            if np.where(C == 4)[0].size == 0:
+                self.centroids.pop(i)
+                self.k =- 1
+            else:
+                centroid_indices = np.where(C == i)[0]
+                self.centroids[i] = np.mean(X[centroid_indices], axis=0)
+
+
+    def fit(self, X):
+        """
+        FIT ME
+        :param X:
+        :return:
         """
         pass
 
 
 ### Consts
 
-f_ex1 = 'ex7data1.mat'
-f_ex2 = 'ex7data2.mat'
-f_faces = 'ex7faces.mat'
+data_dir = './data/'
+f_ex1 = data_dir + 'ex7data1.mat'
+f_ex2 = data_dir + 'ex7data2.mat'
+f_faces = data_dir + 'ex7faces.mat'
 
 ### Functions
 

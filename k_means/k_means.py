@@ -37,8 +37,6 @@ class KMeans(object):
         Randomly init self.centroids by sampling X
         self.centroids will contain a list of the centroids
 
-        Parameters
-        ----------
         param X: Training data
 
         returns: None
@@ -49,11 +47,12 @@ class KMeans(object):
         self.centroids = X[idx,:].copy()
         self.distance_metric = KMeans.euclidean_distance
 
-    def findClosestCentroid(self, x):
+    def getIndexOfClosestCentroid(self, x):
         """
-        finding the closest centroid
+        finding the closest centroid to the sample x
 
         param x: a sample of X (a vector)
+
         return: index of the centroid
         """
 
@@ -66,17 +65,21 @@ class KMeans(object):
                 min_distance_index = i
         return min_distance_index
 
-    def setClosestCentroids(self, X):
+    def stepCenterOfCentroids(self, X):
         """
         This is the "step" method
-        for each x(i) from X we will set the result array res[i] = K - centroid
-        :param X:
-        :return: index array of centroids (len(x) == len(centroids))
+        For each X[i] from X we will set C[i] as the index of the closest centroid to the sample
+        Then, we will re-calculate the "center" of all centroids
+
+        param X: Training data
+
+        returns: None
         """
+
         C = []
-        # Setting C with the index of the centroids.
+        # Setting C with the indexes of the centroids.
         for x in X:
-            C.append(self.findClosestCentroid(x))
+            C.append(self.getIndexOfClosestCentroid(x))
         C = np.array(C)
         for i in range(self.k):
             # Case a centroid isn't close to any sample, we will remove it and reduce k to k-1.

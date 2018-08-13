@@ -5,11 +5,12 @@ import matplotlib.pyplot as plt
 
 ### Classes
 
+
 class KMeans(object):
-    def __init__(self, k=5):
+    def __init__(self, k=5, distance_metric=None):
         self.k = k
         self.centroids = None # mew
-        self.distance_metric = None
+        self.distance_metric = KMeans.getDistanceMetric(distance_metric)
 
     def __test_X_k(self, X):
         if X.shape[0] < self.k:
@@ -32,6 +33,16 @@ class KMeans(object):
             squared_sum += (a-b)**2
         return np.sqrt(squared_sum)
 
+    @classmethod
+    def getDistanceMetric(cls, distance_metric):
+        """ Returning a distance metric """
+        if distance_metric is None:
+            return KMeans.euclidean_distance
+        elif distance_metric == 'euclidean_distance':
+            return KMeans.euclidean_distance
+        else:
+            raise ValueError("{} is not a valid distance_metric/unsupported.".format(distance_metric))
+
     def init_centroids(self, X):
         """
         Randomly init self.centroids by sampling X
@@ -45,7 +56,6 @@ class KMeans(object):
         self.__test_X_k(X)
         idx = np.random.randint(X.shape[0], size=self.k)
         self.centroids = X[idx,:].copy()
-        self.distance_metric = KMeans.euclidean_distance
 
     def getIndexOfClosestCentroid(self, x):
         """
@@ -73,23 +83,29 @@ class KMeans(object):
 
         param X: Training data
 
-        returns: None
+        returns: A list mC of the centroid VECTORS closest to the correlated sample
         """
 
-        C = []
-        # Setting C with the indexes of the centroids.
+        C = []  # Will contain the INDEX of the closest centroid for every given sample
+        mC = [] # Will contain the VECTOR of the closest centroid for every given sample
+        # Setting C with the indexes of the centroids and mC with vectors of the centroids
         for x in X:
             C.append(self.getIndexOfClosestCentroid(x))
+            mC.append(C[-1])
         C = np.array(C)
         for i in range(self.k):
             # Case a centroid isn't close to any sample, we will remove it and reduce k to k-1.
-            if np.where(C == 4)[0].size == 0:
+            if np.where(C == i)[0].size == 0:
                 self.centroids.pop(i)
                 self.k =- 1
             else:
+                # Move centroid
                 centroid_indices = np.where(C == i)[0]
                 self.centroids[i] = np.mean(X[centroid_indices], axis=0)
+        return mC
 
+    def getCost(self, X, mC):
+        return np.mean(np.sum((X - mC)**2, axis=1))
 
     def fit(self, X):
         """
@@ -97,7 +113,11 @@ class KMeans(object):
         :param X:
         :return:
         """
-        pass
+
+        mC = self.stepCenterOfCentroids(X)
+        cost = self.getCost(X, mC)
+
+
 
 
 ### Consts

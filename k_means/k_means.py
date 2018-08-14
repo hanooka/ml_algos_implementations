@@ -7,10 +7,11 @@ import matplotlib.pyplot as plt
 
 
 class KMeans(object):
-    def __init__(self, k=5, distance_metric=None):
+    def __init__(self, k=5, distance_metric=None, delete_centroid=False):
         self.k = k
         self.centroids = None # mew
         self.distance_metric = KMeans.getDistanceMetric(distance_metric)
+        self.delete_centroid = delete_centroid
 
     def __test_X_k(self, X):
         if X.shape[0] < self.k:
@@ -35,7 +36,10 @@ class KMeans(object):
 
     @classmethod
     def getDistanceMetric(cls, distance_metric):
-        """ Returning a distance metric """
+        """
+        Returning a distance metric method
+        Supports: euclidean_distance
+        """
         if distance_metric is None:
             return KMeans.euclidean_distance
         elif distance_metric == 'euclidean_distance':
@@ -88,37 +92,59 @@ class KMeans(object):
 
         C = []  # Will contain the INDEX of the closest centroid for every given sample
         mC = [] # Will contain the VECTOR of the closest centroid for every given sample
+        centroids_to_delete = [] # Will contain the indexes of centroids needed to be deleted
+
         # Setting C with the indexes of the centroids and mC with vectors of the centroids
         for x in X:
             C.append(self.getIndexOfClosestCentroid(x))
-            mC.append(C[-1])
+            mC.append(self.centroids[C[-1]])
         C = np.array(C)
+
         for i in range(self.k):
             # Case a centroid isn't close to any sample, we will remove it and reduce k to k-1.
-            if np.where(C == i)[0].size == 0:
-                self.centroids.pop(i)
-                self.k =- 1
+            if self.delete_centroid and np.where(C == i)[0].size == 0 and self.k > 2:
+                centroids_to_delete.append(i)
+                self.k -= 1
             else:
                 # Move centroid
                 centroid_indices = np.where(C == i)[0]
-                self.centroids[i] = np.mean(X[centroid_indices], axis=0)
+                if centroid_indices.size > 0:
+                    self.centroids[i] = np.mean(X[centroid_indices], axis=0)
+
+        if self.delete_centroid:
+            np.delete(self.centroids, centroids_to_delete)
         return mC
 
     def getCost(self, X, mC):
-        return np.mean(np.sum((X - mC)**2, axis=1))
+        return np.mean(np.sqrt(np.sum((X - mC)**2, axis=1)))
+
+    def optimizeClusters(self, X):
+        """ Optimize the values of the clusters """
+        mC = self.stepCenterOfCentroids(X)
+        cost = self.getCost(X, mC)
+        for i in range(100000):
+            new_mC = self.stepCenterOfCentroids(X)
+            new_cost = self.getCost(X, new_mC)
+            print("Step {}. Cost: {:.4f}".format(i, cost))
+            if cost-new_cost < 0.0001:
+                break
+            else:
+                cost = new_cost
+        print("Finished with {} clusters\n".format(self.k))
 
     def fit(self, X):
+        """ Fit(Optimize) the Algorithm Clusters with random init """
+
+        self.init_centroids(X)
+        self.optimizeClusters(X)
+
+    def predict(self, X):
         """
-        FIT ME
+
         :param X:
         :return:
         """
-
-        mC = self.stepCenterOfCentroids(X)
-        cost = self.getCost(X, mC)
-
-
-
+        pass
 
 ### Consts
 
@@ -133,9 +159,35 @@ f_faces = data_dir + 'ex7faces.mat'
 ### Main
 
 def main():
-    data = loadmat(f_ex1)
+    data = loadmat(f_ex2)
     npdata = np.array(data['X'])
+    # Printing first 6 samples
+    print(npdata[:6])
+    # Shape of data (samples, features)
     print(npdata.shape)
+
+    # Running k means with k = 2, 3, 4, 5, 6, 7
+    # We can see that moving from 2 clusters to 3 clusters reduce the "cost" significantly
+    # But changing it from 3 to 4/5/6/7 reduce the "cost" insignificantly
+    # Thus we can assume the problem can be solved with 3 clusters.
+
+    kmeans2 = KMeans(k=2)
+    kmeans2.fit(npdata)
+
+    kmeans3 = KMeans(k=3)
+    kmeans3.fit(npdata)
+
+    kmeans4 = KMeans(k=4)
+    kmeans4.fit(npdata)
+
+    kmeans5 = KMeans(k=5)
+    kmeans5.fit(npdata)
+
+    kmeans5 = KMeans(k=6)
+    kmeans5.fit(npdata)
+
+    kmeans5 = KMeans(k=7)
+    kmeans5.fit(npdata)
 
 if __name__ == '__main__':
     main()

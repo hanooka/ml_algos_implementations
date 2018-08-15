@@ -29,10 +29,15 @@ class KMeans(object):
         returns: the euclidean distance between vector_a and vector_b
         """
 
-        squared_sum = 0
-        for a, b in zip(vector_a, vector_b):
-            squared_sum += (a-b)**2
-        return np.sqrt(squared_sum)
+        return np.sqrt(np.sum((vector_a-vector_b)**2))
+
+        # Can also
+        # squared_sum = 0
+        # for a, b in zip(vector_a, vector_b):
+        #     squared_sum += (a-b)**2
+        #
+        # return np.sqrt(squared_sum)
+
 
     @classmethod
     def getDistanceMetric(cls, distance_metric):
@@ -152,13 +157,29 @@ data_dir = './data/'
 f_ex1 = data_dir + 'ex7data1.mat'
 f_ex2 = data_dir + 'ex7data2.mat'
 f_faces = data_dir + 'ex7faces.mat'
+f_bird = data_dir + 'bird_small.mat'
 
 ### Functions
 
 
 ### Main
 
+
+def reduce_image():
+    data = loadmat(f_bird)
+    npdata = np.array(data['A'])
+    npdata = npdata.astype(np.int32)
+
+    npdata_reshaped = npdata.reshape(128*128, 3)
+    print(npdata_reshaped.shape)
+
+    kmeans2 = KMeans(k=16)
+    kmeans2.fit(npdata_reshaped)
+
 def main():
+    reduce_image()
+    quit()
+
     data = loadmat(f_ex2)
     npdata = np.array(data['X'])
     # Printing first 6 samples
@@ -170,6 +191,9 @@ def main():
     # We can see that moving from 2 clusters to 3 clusters reduce the "cost" significantly
     # But changing it from 3 to 4/5/6/7 reduce the "cost" insignificantly
     # Thus we can assume the problem can be solved with 3 clusters.
+
+    kmeans2 = KMeans(k=1)
+    kmeans2.fit(npdata)
 
     kmeans2 = KMeans(k=2)
     kmeans2.fit(npdata)

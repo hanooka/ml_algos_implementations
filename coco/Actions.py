@@ -33,6 +33,9 @@ def download_song(task):
 
     address_control = automation.FindControl(control, lambda c, d: isinstance(c,  automation.EditControl) and "Address and search bar" in c.Name)
 
+    if address_control is None:
+        return False
+
     try:
         song_url = address_control.CurrentValue()
         import os

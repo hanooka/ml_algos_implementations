@@ -2,6 +2,7 @@ import threading
 from Messages import ReceiveMessage
 from TextAnalyzer import TextAnalyzer
 import Actions
+from TextToSpeech import TextToSpeech
 
 class CommandCenter(ReceiveMessage, threading.Thread):
     __instance = None
@@ -27,6 +28,10 @@ class CommandCenter(ReceiveMessage, threading.Thread):
 
     def init_commands(self):
         self.commands.append(Commad("echo", ["echo", "print"], Actions.print_action))
+        self.commands.append(Commad("start music", ["music", "start", "on", "begin", "open", "play"], Actions.start_music))
+        self.commands.append(Commad("stop music", ["music", "stop", "end", "close", "off"], Actions.stop_music))
+        self.commands.append(Commad("download song", ["download", "song", "youtube"], Actions.download_song))
+        self.commands.append(Commad("bye", ["bye"], Actions.stop_run))
 
     def run(self):
         text_analyzer = TextAnalyzer.get_instance()
@@ -35,12 +40,16 @@ class CommandCenter(ReceiveMessage, threading.Thread):
             max_score = 0
             best_matched_command = None
             for command in self.commands:
-                similarity_score = text_analyzer.similarity_score(command.get_key_words(), task.get_tokens())
+                similarity_score = text_analyzer.similarity_score(task.get_tokens(), command.get_key_words())
                 if max_score < similarity_score:
                     best_matched_command = command
                     max_score = similarity_score
             if best_matched_command is not None:
-                best_matched_command.perform(task)
+                result = best_matched_command.perform(task)
+                if result:
+                    TextToSpeech.get_instance().send_message("successfully performed " + best_matched_command.get_name() + " command")
+                else:
+                    TextToSpeech.get_instance().send_message("unsuccessfully performed " + best_matched_command.get_name() + " command")
 
 class Task:
     def __init__(self, request, request_tokens):

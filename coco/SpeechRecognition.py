@@ -1,7 +1,10 @@
-import speech_recognition as sr
-import threading
 from TextAnalyzer import TextAnalyzer
 from Command import CommandCenter, Task
+from Locks import speech_lock
+import speech_recognition as sr
+import threading
+import json
+import time
 
 class SpeechRecognizer(threading.Thread):
     __instance = None
@@ -28,12 +31,13 @@ class SpeechRecognizer(threading.Thread):
     def run(self):
         text_analyzer = TextAnalyzer.get_instance()
         command_center = CommandCenter.get_instance()
-
         while not self.stop:
             response = self.recognize_speech_from_mic()
             if response["success"] and response["request"]:
+                print("got request " + json.dumps(response))
                 request_tokens = text_analyzer.parse(response["request"])
-                command_center.send_message(Task(response["request"], request_tokens))
+                if text_analyzer.for_coco(request_tokens):
+                    command_center.send_message(Task(response["request"], request_tokens))
 
     def recognize_speech_from_mic(self):
         # check that recognizer and microphone arguments are appropriate type
@@ -45,9 +49,15 @@ class SpeechRecognizer(threading.Thread):
 
         # adjust the recognizer sensitivity to ambient noise and record audio
         # from the microphone
+        audio = None
         with self.microphone as source:
             self.recognizer.adjust_for_ambient_noise(source)
-            audio = self.recognizer.listen(source)
+            with speech_lock:
+                print("waiting for request")
+                try:
+                    audio = self.recognizer.listen(source, timeout=5)
+                except sr.WaitTimeoutError:
+                    pass
 
         # set up the response object
         response = {
@@ -56,12 +66,15 @@ class SpeechRecognizer(threading.Thread):
             "request": None
         }
 
+        if audio is None:
+            return response
+
         # try recognizing the speech in the recording
         # if a RequestError or UnknownValueError exception is caught,
         #     update the response object accordingly
         try:
             response["request"] = self.recognizer.recognize_google(audio)
-            response["request"] = self.recognizer.recognize_sphinx(audio)
+            #response["request"] = self.recognizer.recognize_sphinx(audio)
         except sr.RequestError:
             # API was unreachable or unresponsive
             response["success"] = False

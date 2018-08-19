@@ -1,6 +1,6 @@
-from .TextAnalyzer import TextAnalyzer
-from .Command import CommandCenter, Task
-from .Locks import QLock
+from TextAnalyzer import TextAnalyzer
+from Command import CommandCenter, Task
+from Locks import QLock
 import speech_recognition as sr
 import threading
 import json
@@ -84,3 +84,4 @@ class SpeechRecognizer(threading.Thread):
             response["error"] = "Unable to recognize speech"
 
         return response
+

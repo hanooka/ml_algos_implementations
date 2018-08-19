@@ -14,4 +14,3 @@ if __name__ == "__main__":
     command_center.start()
     speech_recognizer.start()
     text_to_speech.send_message("Coco up and running")
-

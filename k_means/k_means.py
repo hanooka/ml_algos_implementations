@@ -207,12 +207,11 @@ def main():
     kmeans5 = KMeans(k=5)
     kmeans5.fit(npdata)
 
-    kmeans5 = KMeans(k=6)
-    kmeans5.fit(npdata)
+    kmeans6 = KMeans(k=6)
+    kmeans6.fit(npdata)
 
-    kmeans5 = KMeans(k=7)
-    kmeans5.fit(npdata)
+    kmeans7 = KMeans(k=7)
+    kmeans7.fit(npdata)
 
 if __name__ == '__main__':
     main()
-

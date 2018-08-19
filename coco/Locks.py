@@ -1,6 +1,9 @@
 import threading, collections
 
-class QLock:
+class QLock(object):
+
+    __speech_lock = None
+
     def __init__(self):
         self.lock = threading.Lock()
         self.waiters = collections.deque()
@@ -35,4 +38,22 @@ class QLock:
     def locked(self):
         return self.count > 0
 
-speech_lock = QLock()
+    @classmethod
+    def getQLock(cls):
+        if cls.__speech_lock is None:
+            cls.__speech_lock = QLock()
+        return cls.__speech_lock
+
+
+# if __name__ == '__main__':
+#     lk1 = QLock.getQLock()
+#     print(lk1)
+#     lk2 = QLock.getQLock()
+#     print(lk2)
+#     print(lk1 == lk2)
+#     print(lk1 is lk2)
+#
+#     #<__main__.QLock object at 0x00000220EF3FB080>
+#     #<__main__.QLock object at 0x00000220EF3FB080>
+#     #True
+#     #True

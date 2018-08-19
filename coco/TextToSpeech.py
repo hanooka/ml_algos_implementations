@@ -1,5 +1,5 @@
 from Messages import ReceiveMessage
-from Locks import speech_lock
+from Locks import QLock
 
 import threading
 from gtts import gTTS
@@ -40,7 +40,7 @@ class TextToSpeech(ReceiveMessage, threading.Thread):
             tts.save(filename)
 
             music = pyglet.media.load(filename, streaming=False)
-            with speech_lock:
+            with QLock.getQLock():
                 music.play()
                 sleep(music.duration)  # prevent from killing
 

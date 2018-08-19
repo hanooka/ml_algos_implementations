@@ -1,4 +1,4 @@
-from TextToSpeech import TextToSpeech
+from .TextToSpeech import TextToSpeech
 
 def print_action(task):
     echo_request_tokens = [word for word in task.get_tokens() if word not in ["echo", "print", "coco"]]
@@ -65,9 +65,9 @@ def download_song(task):
 
 def stop_run():
     print("stop_run")
-    from SpeechRecognition import SpeechRecognizer
-    from Command import CommandCenter
-    from TextToSpeech import TextToSpeech
+    from .SpeechRecognition import SpeechRecognizer
+    from .Command import CommandCenter
+    from .TextToSpeech import TextToSpeech
 
     SpeechRecognizer.get_instance().stop()
     CommandCenter.get_instance().stop()

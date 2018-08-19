@@ -1,5 +1,5 @@
-from Messages import ReceiveMessage
-from Locks import QLock
+from .Messages import ReceiveMessage
+from .Locks import QLock
 
 import threading
 from gtts import gTTS

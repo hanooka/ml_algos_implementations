@@ -1,8 +1,8 @@
 import threading
-from Messages import ReceiveMessage
-from TextAnalyzer import TextAnalyzer
-import Actions
-from TextToSpeech import TextToSpeech
+from .Messages import ReceiveMessage
+from .TextAnalyzer import TextAnalyzer
+from . import Actions
+from .TextToSpeech import TextToSpeech
 
 class CommandCenter(ReceiveMessage, threading.Thread):
     __instance = None

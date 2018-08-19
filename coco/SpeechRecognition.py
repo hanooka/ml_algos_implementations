@@ -1,6 +1,6 @@
-from TextAnalyzer import TextAnalyzer
-from Command import CommandCenter, Task
-from Locks import speech_lock
+from .TextAnalyzer import TextAnalyzer
+from .Command import CommandCenter, Task
+from .Locks import QLock
 import speech_recognition as sr
 import threading
 import json
@@ -52,7 +52,7 @@ class SpeechRecognizer(threading.Thread):
         audio = None
         with self.microphone as source:
             self.recognizer.adjust_for_ambient_noise(source)
-            with speech_lock:
+            with QLock.getQLock():
                 print("waiting for request")
                 try:
                     audio = self.recognizer.listen(source, timeout=5)

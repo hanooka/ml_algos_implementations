@@ -1,9 +1,9 @@
 import warnings
 warnings.filterwarnings("ignore", message="detected Windows; aliasing chunkize to chunkize_serial")
 warnings.filterwarnings("ignore", message=".*Conversion of the second argument of issubdtype from .*")
-from SpeechRecognition import SpeechRecognizer
-from Command import CommandCenter
-from TextToSpeech import TextToSpeech
+from .SpeechRecognition import SpeechRecognizer
+from .Command import CommandCenter
+from .TextToSpeech import TextToSpeech
 
 
 if __name__ == "__main__":

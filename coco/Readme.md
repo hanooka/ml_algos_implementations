@@ -10,6 +10,7 @@ Coco project has the following dependencies
 	SpeechRecognition
 	youtube-dl
 	pyglet
+	PyAudio
 All can easily be installed using pip
 
 For gensim the GoogleNews-vectors-negative300.bin is needed.

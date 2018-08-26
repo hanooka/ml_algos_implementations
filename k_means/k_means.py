@@ -20,7 +20,7 @@ class KMeans(object):
     @staticmethod
     def euclidean_distance(vector_a, vector_b):
         """
-        calculating euclidean distance between to vectors
+        calculating euclidean distance between two vectors
         Parameters
         ----------
         vector_a: vector/array of shape (1, n)
@@ -68,7 +68,7 @@ class KMeans(object):
 
     def getIndexOfClosestCentroid(self, x):
         """
-        finding the closest centroid to the sample x
+        Finding the closest centroid to the sample x
 
         param x: a sample of X (a vector)
 

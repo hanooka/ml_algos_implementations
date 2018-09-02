@@ -67,6 +67,18 @@ class TextAnalyzer:
             mean cosine similarity of the most similar possible pairs in product(`vec1`, `vec2`)
 
         """
+        # # No double words implementation:
+        # max_scores = []
+        # word_cuples = list(itertools.product(word_vector, word_vector2))
+        # scores = np.array(list(map(lambda tupl: self.word2vec.similarity(tupl[0], tupl[1]), word_cuples)))
+        # word_cuples = [(word_cuple[0], word_cuple[1], score) for word_cuple, score in zip(word_cuples, scores)]
+        # word_cuples = sorted(word_cuples, key=lambda x: -x[2])
+        # while word_cuples:
+        #     max_scores.append(word_cuples[0][2])
+        #     word_cuples = [t for t in word_cuples if t[0] != word_cuples[0][0] and t[1] != word_cuples[0][1]]
+        # return(np.array(max_scores).mean())
+
+        # Words can repeat implementation:
         max_scores = []
         # Initializing deep copy arrays, as pythons arrays are mutable.
         # Also, additional vectors are needed for duplicated words.
@@ -82,9 +94,10 @@ class TextAnalyzer:
             word_cuples = list(itertools.product(vec1, vec2))
         return(np.array(max_scores).mean())
 
+
 if __name__ == '__main__':
     pass
-    # Testing similarity_score
+    # # Testing similarity_score
     # ta = TextAnalyzer.get_instance()
     # l1 = "mathematics is a hard subject please that a lot of people can't grasp".split(' ')
     # l2 = "software engineer is not easy as well and a lot of people are trying hard to learn it".split(' ')

@@ -43,6 +43,7 @@ class PCA(object):
         return(np.dot(X, self._transformation_matrix))
 
 if __name__ == '__main__':
+    # Comment
     pca = PCA(2)
     mat = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9], [2, 5, 4], [1, 1, 2]])
     print("The Matrix: \n", mat, '\n')

@@ -33,12 +33,12 @@ class AutoEncoder(object):
         encoded = Dense(64, activation='relu')(input_)
         encoded = Dense(32, activation='relu')(encoded)
         encoded = Dense(16, activation='relu')(encoded)
-        encoded = Dense(self.encoding_dim, activation='relu')(encoded)
+        encoded = Dense(self.encoding_dim, activation='tanh')(encoded)
 
         decoded = Dense(16, activation='relu')(encoded)
         decoded = Dense(32, activation='relu')(decoded)
         decoded = Dense(64, activation='relu')(decoded)
-        decoded = Dense(self.input_dim, activation='sigmoid')(decoded)
+        decoded = Dense(self.input_dim, activation='relu')(decoded)
 
         self._autoencoder = Model(input_, decoded)
         self._encoder = Model(input_, encoded)

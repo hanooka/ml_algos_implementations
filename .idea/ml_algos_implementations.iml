@@ -5,6 +5,11 @@
       <sourceFolder url="file://$MODULE_DIR$/coco" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/k_means" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/linear_regression" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/auto_encoder" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/NN T1" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/NNT2" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/NNT3" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/my_neural_network" isTestSource="false" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.6" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

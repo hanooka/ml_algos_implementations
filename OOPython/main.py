@@ -55,9 +55,66 @@ class Car(object):
         return "{__class__.__name__}(name={name!r}, color={color!r})".format(
             __class__=self.__class__, **self.__dict__)
 
-cars_list = []
-classCar = Car("BMW", "Hvid")
-cars_list.append(classCar.name)
 
-print(classCar)
-print(repr(classCar))
+class BlackJackCard:
+    def __init__(self, rank, suit, hard, soft):
+
+        self.rank = rank
+        self.suit = suit
+        self.hard = hard
+        self.soft = soft
+
+    def __lt__(self, other):
+        if not isinstance(other, BlackJackCard):
+            return NotImplemented
+        return self.rank < other.rank
+
+
+    def __le__(self, other):
+        try:
+            return self.rank <= other.rank
+        except AttributeError:
+            return NotImplemented
+
+
+    def __gt__(self, other):
+        if not isinstance(other, BlackJackCard):
+            return NotImplemented
+        return self.rank > other.rank
+
+
+    def __ge__(self, other):
+        if not isinstance(other, BlackJackCard):
+            return NotImplemented
+        return self.rank >= other.rank
+
+
+    def __eq__(self, other):
+        if not isinstance(other, BlackJackCard):
+            return NotImplemented
+        return self.rank == other.rank and self.suit == other.suit
+
+
+    def __ne__(self, other):
+        if not isinstance(other, BlackJackCard):
+            return NotImplemented
+        return self.rank != other.rank and self.suit != other.suit
+
+
+    def __str__(self):
+        return "{rank}{suit}".format(**self.__dict__)
+
+
+class Parent:
+    def __init__(self, *children):
+        self.children = list(children)
+        for child in self.children:
+            child.parent = self
+
+    def __del__(self):
+        print("Removing {__class__.__name__} {id:d}".format(__class__=self.__class__, id=id(self)))
+
+
+class Child:
+    def __del__(self):
+        print("Removing {__class__.__name__} {id:d}".format(__class__=self.__class__, id=id(self)))

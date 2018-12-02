@@ -31,13 +31,15 @@ class FullyConnected(Layer):
             'sigmoid': SigmoidActivation(),
             'tanh': TanhActivation()
         }
-
         if isinstance(activation, str):
             self.activation = activation_map[activation]
         elif isinstance(activation, Activation):
             self.activation = activation
         else:
             raise AttributeError("{} is of type {}. expected {} or {}".format(activation, type(activation), str, Activation))
+
+    def get_activation_func(self):
+        return self.activation.get_activation_func()
 
 
 class InputLayer(Layer):
